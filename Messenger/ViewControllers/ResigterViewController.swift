@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import FirebaseAuth
 
 class ResigterViewController: UIViewController {
     
@@ -20,7 +21,7 @@ class ResigterViewController: UIViewController {
     
     private let imageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(systemName: "person")
+        imageView.image = UIImage(systemName: "person.circle")
         imageView.contentMode = .scaleAspectFit
         imageView.layer.masksToBounds = true
         imageView.layer.borderWidth = 2
@@ -97,7 +98,7 @@ class ResigterViewController: UIViewController {
     
     private let registerButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Log In", for: .normal)
+        button.setTitle("Register", for: .normal)
         button.backgroundColor = .systemGreen
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 20, weight: .bold)
@@ -215,7 +216,23 @@ class ResigterViewController: UIViewController {
                   return
               }
         
-        // Perform operation
+        let user = ChatAppUser(firstName: firstName, lastName: lastName, email: email)
+        DatabaseManager.shared.validateUser(with: user.id) { [weak self] userExits in
+            guard !userExits else {
+                return
+            }
+            
+            FirebaseAuth.Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
+                guard authResult != nil, error == nil else {
+                    print("Error to create user \(String(describing: error))")
+                    return
+                }
+                
+                print("Register user successfully")
+                DatabaseManager.shared.createUser(user)
+                self?.navigationController?.dismiss(animated: true)
+            }
+        }
     }
     
     @objc private func didTapImageView() {
