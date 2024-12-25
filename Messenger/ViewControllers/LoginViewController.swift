@@ -6,7 +6,10 @@
 //
 
 import UIKit
+import FacebookLogin
 import FirebaseAuth
+import FirebaseCore
+import GoogleSignIn
 
 class LoginViewController: UIViewController {
     
@@ -72,6 +75,19 @@ class LoginViewController: UIViewController {
         return button
     }()
     
+    private let facebookLoginButton: FBLoginButton = {
+        let button = FBLoginButton()
+        button.permissions = ["public_profile", "email"]
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
+    private let googleSiginInButton: GIDSignInButton = {
+        let button = GIDSignInButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
     // MARK: Override methods
 
     override func viewDidLoad() {
@@ -102,6 +118,8 @@ class LoginViewController: UIViewController {
         scrollView.addSubview(emailField)
         scrollView.addSubview(passwordField)
         scrollView.addSubview(loginButton)
+        scrollView.addSubview(facebookLoginButton)
+        scrollView.addSubview(googleSiginInButton)
     }
     
     private func setupConstraints() {
@@ -133,12 +151,24 @@ class LoginViewController: UIViewController {
             loginButton.centerXAnchor.constraint(equalTo: scrollView.contentLayoutGuide.centerXAnchor),
             loginButton.widthAnchor.constraint(equalTo: scrollView.contentLayoutGuide.widthAnchor, multiplier: 0.8),
             loginButton.heightAnchor.constraint(equalToConstant: 52),
+            
+            facebookLoginButton.topAnchor.constraint(equalTo: loginButton.bottomAnchor, constant: 10),
+            facebookLoginButton.centerXAnchor.constraint(equalTo: scrollView.contentLayoutGuide.centerXAnchor),
+            facebookLoginButton.widthAnchor.constraint(equalTo: scrollView.contentLayoutGuide.widthAnchor, multiplier: 0.8),
+            facebookLoginButton.heightAnchor.constraint(equalToConstant: 52),
+            
+            googleSiginInButton.topAnchor.constraint(equalTo: facebookLoginButton.bottomAnchor, constant: 10),
+            googleSiginInButton.centerXAnchor.constraint(equalTo: scrollView.contentLayoutGuide.centerXAnchor),
+            googleSiginInButton.widthAnchor.constraint(equalTo: scrollView.contentLayoutGuide.widthAnchor, multiplier: 0.8),
+            googleSiginInButton.heightAnchor.constraint(equalToConstant: 52),
         ])
     }
     
     private func setupInteraction() {
         emailField.delegate = self
         passwordField.delegate = self
+        facebookLoginButton.delegate = self
+        googleSiginInButton.addTarget(self, action: #selector (didTapGoogleLoginButton), for: .touchUpInside)
         loginButton.addTarget(self, action: #selector(didTapLoginButton), for: .touchUpInside)
     }
     
@@ -189,3 +219,105 @@ extension LoginViewController: UITextFieldDelegate {
     }
 }
 
+extension LoginViewController: LoginButtonDelegate {
+    func loginButtonDidLogOut(_ loginButton: FBSDKLoginKit.FBLoginButton) {
+        // no operation
+    }
+    
+    func loginButton(_ loginButton: FBLoginButton, didCompleteWith result: LoginManagerLoginResult?, error: Error?) {
+        guard let token = result?.token?.tokenString else {
+            return
+        }
+        
+        let request = FBSDKLoginKit.GraphRequest(
+            graphPath: "me",
+            parameters: ["fields": "email, first_name, last_name"],
+            tokenString: token,
+            version: nil,
+            httpMethod: .get)
+        
+        request.start { _, result, error in
+            guard let result, error == nil else {
+                print("Failed to make facebook graphql request \(String(describing: error))")
+                return
+            }
+            
+            
+            guard let data = result as? [String: Any],
+                  let email = data["email"] as? String,
+                  let firstName = data["first_name"] as? String,
+                  let lastName = data["last_name"] as? String else {
+                print("Facebook request failed to provide data.")
+                return
+            }
+            
+            let user = ChatAppUser(firstName: firstName, lastName: lastName, email: email)
+            DatabaseManager.shared.validateUser(with: user.id) { exits in
+                guard !exits else {
+                    return
+                }
+                
+                DatabaseManager.shared.createUser(user)
+            }
+        }
+        
+        let credidentials = FacebookAuthProvider.credential(withAccessToken: token)
+        FirebaseAuth.Auth.auth().signIn(with: credidentials) { [weak self] authResult, error in
+            guard authResult != nil, error == nil else {
+                print("Unable to login via facebook \(String(describing: error))")
+                return
+            }
+            
+            print("Facebook login successful")
+            self?.navigationController?.dismiss(animated: true)
+        }
+    }
+}
+
+extension LoginViewController {
+    
+    @objc func didTapGoogleLoginButton() {
+        guard let clientID = FirebaseApp.app()?.options.clientID else { return }
+
+        // Create Google Sign In configuration object.
+        let config = GIDConfiguration(clientID: clientID)
+        GIDSignIn.sharedInstance.configuration = config
+
+        // Start the sign in flow!
+        GIDSignIn.sharedInstance.signIn(withPresenting: self) { [weak self] result, error in
+            guard let user = result?.user, let token = user.idToken?.tokenString, error == nil else {
+                print("Failed to login via google sign in")
+                return
+            }
+            
+            guard let email = user.profile?.email,
+                  let firstName = user.profile?.givenName else {
+                print("Google request failed to provide data.")
+                return
+            }
+            
+            let lastName = user.profile?.familyName ?? ""
+            let chatUser = ChatAppUser(firstName: firstName, lastName: lastName, email: email)
+            DatabaseManager.shared.validateUser(with: chatUser.id) { exits in
+                guard !exits else {
+                    return
+                }
+                
+                DatabaseManager.shared.createUser(chatUser)
+            }
+            
+            let credential = GoogleAuthProvider.credential(withIDToken: token,
+                                                           accessToken: user.accessToken.tokenString)
+            
+            FirebaseAuth.Auth.auth().signIn(with: credential) { [weak self] authResult, error in
+                guard authResult != nil, error == nil else {
+                    print("Unable to login via Google \(String(describing: error))")
+                    return
+                }
+                
+                print("Google login successfuls")
+                self?.navigationController?.dismiss(animated: true)
+            }
+        }
+    }
+}

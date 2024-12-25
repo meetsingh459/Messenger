@@ -18,6 +18,36 @@
             endingLineNumber = "211"
             landmarkName = "didTapResigterButton()"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "F59E0F76-9346-45BF-A2A3-41F1160110E4 - 3e13ac07d825a4de"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Messenger.ResigterViewController.didTapResigterButton() -&gt; ()"
+                  moduleName = "Messenger.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/manmeetsingh/Desktop/IOS%20Projects%20/UIKit/Messenger/Messenger/ViewControllers/ResigterViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "211"
+                  endingLineNumber = "211">
+               </Location>
+               <Location
+                  uuid = "F59E0F76-9346-45BF-A2A3-41F1160110E4 - 3e13ac07d825a4de"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Messenger.ResigterViewController.didTapResigterButton() -&gt; ()"
+                  moduleName = "Messenger.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/manmeetsingh/Desktop/IOS%20Projects%20/UIKit/Messenger/Messenger/ViewControllers/ResigterViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "211"
+                  endingLineNumber = "211">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -33,6 +63,22 @@
             startingLineNumber = "221"
             endingLineNumber = "221"
             landmarkName = "didTapResigterButton()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "8A7F4060-5264-46F1-B5CA-434995B29A83"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Messenger/ViewControllers/LoginViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "293"
+            endingLineNumber = "293"
+            landmarkName = "didTapGoogleLoginButton()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
