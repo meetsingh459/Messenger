@@ -8,11 +8,26 @@
 import UIKit
 
 class NewConversationViewController: UIViewController {
+    
+    private let searchBar: UISearchBar = {
+        let searchBar = UISearchBar()
+        searchBar.placeholder = "Search for users..."
+        return searchBar
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        searchBar.delegate = self
+        navigationController?.navigationBar.topItem?.titleView = searchBar
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(dismissController))
+        
         // Do any additional setup after loading the view.
+        searchBar.becomeFirstResponder()
+    }
+    
+    @objc private func dismissController() {
+        dismiss(animated: true)
     }
     
 
@@ -26,4 +41,11 @@ class NewConversationViewController: UIViewController {
     }
     */
 
+}
+
+extension NewConversationViewController: UISearchBarDelegate {
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        
+    }
 }

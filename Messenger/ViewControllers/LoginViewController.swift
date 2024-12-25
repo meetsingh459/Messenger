@@ -15,6 +15,13 @@ class LoginViewController: UIViewController {
     
     // MARK: Private properties
     
+    private let spinner: UIActivityIndicatorView = {
+        let spinner = UIActivityIndicatorView(style: .large)
+        spinner.color = .black // Set the color of the spinner
+        spinner.hidesWhenStopped = true // Automatically hide when stopped
+        return spinner
+    }()
+    
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.clipsToBounds = true
@@ -120,9 +127,11 @@ class LoginViewController: UIViewController {
         scrollView.addSubview(loginButton)
         scrollView.addSubview(facebookLoginButton)
         scrollView.addSubview(googleSiginInButton)
+        view.addSubview(spinner)
     }
     
     private func setupConstraints() {
+        spinner.center = view.center
         let imageSize = view.width / 3
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -236,6 +245,7 @@ extension LoginViewController: LoginButtonDelegate {
             version: nil,
             httpMethod: .get)
         
+        spinner.startAnimating()
         request.start { _, result, error in
             guard let result, error == nil else {
                 print("Failed to make facebook graphql request \(String(describing: error))")
@@ -263,6 +273,7 @@ extension LoginViewController: LoginButtonDelegate {
         
         let credidentials = FacebookAuthProvider.credential(withAccessToken: token)
         FirebaseAuth.Auth.auth().signIn(with: credidentials) { [weak self] authResult, error in
+            self?.spinner.stopAnimating()
             guard authResult != nil, error == nil else {
                 print("Unable to login via facebook \(String(describing: error))")
                 return
@@ -282,17 +293,21 @@ extension LoginViewController {
         // Create Google Sign In configuration object.
         let config = GIDConfiguration(clientID: clientID)
         GIDSignIn.sharedInstance.configuration = config
+        
+        spinner.startAnimating()
 
         // Start the sign in flow!
         GIDSignIn.sharedInstance.signIn(withPresenting: self) { [weak self] result, error in
             guard let user = result?.user, let token = user.idToken?.tokenString, error == nil else {
                 print("Failed to login via google sign in")
+                self?.spinner.stopAnimating()
                 return
             }
             
             guard let email = user.profile?.email,
                   let firstName = user.profile?.givenName else {
                 print("Google request failed to provide data.")
+                self?.spinner.stopAnimating()
                 return
             }
             
@@ -310,6 +325,7 @@ extension LoginViewController {
                                                            accessToken: user.accessToken.tokenString)
             
             FirebaseAuth.Auth.auth().signIn(with: credential) { [weak self] authResult, error in
+                self?.spinner.stopAnimating()
                 guard authResult != nil, error == nil else {
                     print("Unable to login via Google \(String(describing: error))")
                     return

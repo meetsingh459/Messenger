@@ -14,6 +14,9 @@
 		10FC36582D1B3AFA00757457 /* FacebookLogin in Frameworks */ = {isa = PBXBuildFile; productRef = 10FC36572D1B3AFA00757457 /* FacebookLogin */; };
 		10FC365D2D1BD91B00757457 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 10FC365C2D1BD91B00757457 /* GoogleSignIn */; };
 		10FC365F2D1BD91B00757457 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 10FC365E2D1BD91B00757457 /* GoogleSignInSwift */; };
+		10FC36622D1C100000757457 /* MessageKit in Frameworks */ = {isa = PBXBuildFile; productRef = 10FC36612D1C100000757457 /* MessageKit */; };
+		10FC36652D1C10DC00757457 /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = 10FC36642D1C10DC00757457 /* SDWebImage */; };
+		10FC36672D1C10DC00757457 /* SDWebImageMapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 10FC36662D1C10DC00757457 /* SDWebImageMapKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,7 +55,10 @@
 				1088EFA32D184CDB00D9847A /* FirebaseCore in Frameworks */,
 				1088EFA12D184CDB00D9847A /* FirebaseAuth in Frameworks */,
 				10FC36562D1B3AFA00757457 /* FacebookCore in Frameworks */,
+				10FC36672D1C10DC00757457 /* SDWebImageMapKit in Frameworks */,
+				10FC36652D1C10DC00757457 /* SDWebImage in Frameworks */,
 				10FC365D2D1BD91B00757457 /* GoogleSignIn in Frameworks */,
+				10FC36622D1C100000757457 /* MessageKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -110,6 +116,9 @@
 				10FC36572D1B3AFA00757457 /* FacebookLogin */,
 				10FC365C2D1BD91B00757457 /* GoogleSignIn */,
 				10FC365E2D1BD91B00757457 /* GoogleSignInSwift */,
+				10FC36612D1C100000757457 /* MessageKit */,
+				10FC36642D1C10DC00757457 /* SDWebImage */,
+				10FC36662D1C10DC00757457 /* SDWebImageMapKit */,
 			);
 			productName = Messenger;
 			productReference = 10A000492D18145A00D67AAB /* Messenger.app */;
@@ -143,6 +152,8 @@
 				1088EF9E2D184AD500D9847A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				10FC36542D19E7F300757457 /* XCRemoteSwiftPackageReference "facebook-ios-sdk" */,
 				10FC365B2D1BD91B00757457 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+				10FC36602D1C100000757457 /* XCRemoteSwiftPackageReference "MessageKit" */,
+				10FC36632D1C10DC00757457 /* XCRemoteSwiftPackageReference "SDWebImage" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 10A0004A2D18145A00D67AAB /* Products */;
@@ -404,6 +415,22 @@
 				minimumVersion = 8.0.0;
 			};
 		};
+		10FC36602D1C100000757457 /* XCRemoteSwiftPackageReference "MessageKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/MessageKit/MessageKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.0;
+			};
+		};
+		10FC36632D1C10DC00757457 /* XCRemoteSwiftPackageReference "SDWebImage" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SDWebImage/SDWebImage";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.20.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -441,6 +468,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 10FC365B2D1BD91B00757457 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
 			productName = GoogleSignInSwift;
+		};
+		10FC36612D1C100000757457 /* MessageKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 10FC36602D1C100000757457 /* XCRemoteSwiftPackageReference "MessageKit" */;
+			productName = MessageKit;
+		};
+		10FC36642D1C10DC00757457 /* SDWebImage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 10FC36632D1C10DC00757457 /* XCRemoteSwiftPackageReference "SDWebImage" */;
+			productName = SDWebImage;
+		};
+		10FC36662D1C10DC00757457 /* SDWebImageMapKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 10FC36632D1C10DC00757457 /* XCRemoteSwiftPackageReference "SDWebImage" */;
+			productName = SDWebImageMapKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
